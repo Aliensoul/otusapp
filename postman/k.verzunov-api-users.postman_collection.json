@@ -1,0 +1,191 @@
+{
+  "info": {
+    "_postman_id": "83a1c714-783c-45b5-ac18-69f792f31364",
+    "name": "k.verzunov/api/users",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "create user",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"k.verzunov@mail.ru\",\r\n  \"firstName\": \"Kirill\",\r\n  \"lastName\": \"Verzunov\",\r\n  \"phone\": \"+79999999999\",\r\n  \"username\": \"aliensoul\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://arch.homework/otusapp/k.verzunov/api/users/1",
+          "protocol": "http",
+          "host": [
+            "arch",
+            "homework"
+          ],
+          "path": [
+            "otusapp",
+            "k.verzunov",
+            "api",
+            "users",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get user",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://{{basePath}}/api/users/{{userId}}",
+          "protocol": "http",
+          "host": [
+            "{{basePath}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "update user",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"k.verzunov@gmail.com\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://{{basePath}}/api/users/{{userId}}",
+          "protocol": "http",
+          "host": [
+            "{{basePath}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get user after update",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://{{basePath}}/api/users/{{userId}}",
+          "protocol": "http",
+          "host": [
+            "{{basePath}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delete user",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://{{basePath}}/api/users/{{userId}}",
+          "protocol": "http",
+          "host": [
+            "{{basePath}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get user after delete",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://{{basePath}}/api/users/{{userId}}",
+          "protocol": "http",
+          "host": [
+            "{{basePath}}"
+          ],
+          "path": [
+            "api",
+            "users",
+            "{{userId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "id": "642b70c3-b3a0-4df0-a0f3-1599c5e3545d",
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "id": "c0bff4db-6887-4b26-a463-0768b60d059b",
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "id": "ef9e2524-004f-420b-83a2-b18df46484f4",
+      "key": "userId",
+      "value": "2"
+    },
+    {
+      "id": "e221e5fd-4e08-4be5-ad01-03dbf8a681b1",
+      "key": "basePath",
+      "value": "arch.homework/otusapp/k.verzunov"
+    },
+    {
+      "id": "1a72f379-8bfa-45db-b13b-b1e373a90515",
+      "key": "additionalPath",
+      "value": "",
+      "disabled": true
+    }
+  ],
+  "protocolProfileBehavior": {}
+}
