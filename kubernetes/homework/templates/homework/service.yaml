@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: {{ include "homework.fullname" . }}
+    labels:
+        {{- include "homework.labels" . | nindent 4 }}
+spec:
+    type: {{ .Values.homework.service.type }}
+    ports:
+        - port: {{ .Values.homework.service.port }}
+          targetPort: {{ .Values.homework.service.name }}
+          protocol: TCP
+          name: {{ .Values.homework.service.name }}
+    selector:
+        {{- include "homework.selectorLabels" . | nindent 4 }}

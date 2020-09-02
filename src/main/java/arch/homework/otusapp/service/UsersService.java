@@ -8,8 +8,13 @@ public interface UsersService {
 
     User createUser(Long id, User user);
 
+    default User createUser(User user) {
+        return createUser(null, user);
+    }
+
     void deleteUser(Long id);
 
     User updateUser(Long id, User user);
 
+    User getUserByCreds(String username, String password);
 }

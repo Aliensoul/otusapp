@@ -22,6 +22,7 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("arch.homework.otusapp.controller"))
                 .paths(PathSelectors.regex("/api/.*"))
+                .paths(PathSelectors.regex("/.*"))
                 .build()
                 .pathMapping("/otusapp/k.verzunov");
     }

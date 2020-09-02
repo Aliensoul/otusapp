@@ -31,4 +31,9 @@ public class UsersServiceImpl implements UsersService {
     public User updateUser(Long id, User user) {
         return usersRepository.updateUser(user.setId(id));
     }
+
+    @Override
+    public User getUserByCreds(String username, String password) {
+        return usersRepository.getUserByCreds(username, password);
+    }
 }

@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "homework.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "homework.fullname" . }}:{{ .Values.homework.service.port }}']
   restartPolicy: Never

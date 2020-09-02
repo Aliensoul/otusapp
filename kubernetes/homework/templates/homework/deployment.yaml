@@ -3,34 +3,34 @@ kind: Deployment
 metadata:
   name: {{ include "homework.fullname" . }}
   labels:
-  {{- include "homework.labels" . | nindent 4 }}
+        {{- include "homework.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.homework.replicaCount }}
   selector:
     matchLabels:
-  {{- include "homework.selectorLabels" . | nindent 6 }}
+        {{- include "homework.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      labels:
-      {{- include "homework.selectorLabels" . | nindent 8 }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+      labels:
+          {{- include "homework.selectorLabels" . | nindent 8 }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{.Chart.AppVersion }}"
+        - name: {{ .Values.homework.name }}
+          image: "{{ .Values.homework.image.repository }}:{{.Chart.AppVersion }}"
           ports:
-            - name: http
-              containerPort: 8000
+            - name: {{.Values.homework.service.name}}
+              containerPort: {{.Values.homework.service.port}}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /health/liveness
-              port: http
+              port: {{.Values.homework.service.name}}
           readinessProbe:
             httpGet:
               path: /health/readiness
-              port: http
+              port: {{.Values.homework.service.name}}
           env:
             - name: DATABASE_PASSWORD
               valueFrom:

@@ -1,0 +1,35 @@
+{{- if .Values.authserver.ingress.enabled -}}
+        {{- $fullName := include "homework.fullname" . -}}
+        {{- $svcPort := .Values.authserver.service.port -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+    name: {{ $fullName }}-authserver
+    labels:
+            {{- include "homework.labels" . | nindent 4 }}-authserver
+spec:
+    rules:
+        - host: arch.homework
+          http:
+              paths:
+                  - backend:
+                        serviceName: {{ $fullName }}-authserver
+                        servicePort: {{ $svcPort }}
+                    path: /login
+                  - backend:
+                        serviceName: {{ $fullName }}-authserver
+                        servicePort: {{ $svcPort }}
+                    path: /logout
+                  - backend:
+                        serviceName: {{ $fullName }}-authserver
+                        servicePort: {{ $svcPort }}
+                    path: /register
+                  - backend:
+                        serviceName: {{ $fullName }}-authserver
+                        servicePort: {{ $svcPort }}
+                    path: /auth
+                  - backend:
+                        serviceName: {{ $fullName }}-authserver
+                        servicePort: {{ $svcPort }}
+                    path: /signin
+        {{- end }}

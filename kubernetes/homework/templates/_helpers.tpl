@@ -68,3 +68,17 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "postgresql.fullname" -}}
 {{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "prometheus-operator.fullname" -}}
+{{- printf "%s-%s" .Release.Name "prometheus-operator" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "prometheus-postgres-exporter.fullname" -}}
+{{- printf "%s-%s" .Release.Name "prometheus-postgres-exporter" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}

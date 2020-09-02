@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset users_create:1
+--changeset k.verzunov:create-users
 
 create table if not exists users
 (

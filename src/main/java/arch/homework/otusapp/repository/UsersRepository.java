@@ -12,4 +12,5 @@ public interface UsersRepository {
 
     User updateUser(User user);
 
+    User getUserByCreds(String username, String password);
 }

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "homework.fullname" . }}-authserver
+  labels:
+    {{- include "homework.labels" . | nindent 4 }}-authserver
+spec:
+  replicas: {{ .Values.authserver.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "homework.selectorLabels" . | nindent 6 }}-authserver
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+      labels:
+        {{- include "homework.selectorLabels" . | nindent 8 }}-authserver
+    spec:
+      containers:
+        - name: {{ .Values.authserver.name }}
+          image: "{{ .Values.authserver.image.repository }}:{{.Chart.AppVersion }}"
+          ports:
+            - name: {{.Values.authserver.service.portName}}
+              containerPort: {{.Values.authserver.service.port}}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: {{.Values.authserver.service.portName}}
+          readinessProbe:
+            httpGet:
+              path: /health/readiness
+              port: {{.Values.authserver.service.portName}}
+          env:
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: homework-secret
+                  key: DATABASE_PASSWORD
+            - name: DATABASE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_HOST
+                  name: homework-config
+            - name: DATABASE_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_DATABASE
+                  name: homework-config
+            - name: DATABASE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_USERNAME
+                  name: homework-config
