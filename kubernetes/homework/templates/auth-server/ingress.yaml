@@ -7,7 +7,7 @@ metadata:
   name: {{ $fullName }}-authserver
   labels:
     app: {{ include "homework.fullname" . }}-authserver
-      {{- include "homework.labels" . | nindent 4 }}-authserver
+      {{- include "homework.labels" . | nindent 4 }}
 spec:
   rules:
     - host: arch.homework
@@ -18,19 +18,19 @@ spec:
               servicePort: {{ $svcPort }}
             path: /login
           - backend:
-                        serviceName: {{ $fullName }}-authserver
-                        servicePort: {{ $svcPort }}
-                    path: /logout
-                  - backend:
-                        serviceName: {{ $fullName }}-authserver
-                        servicePort: {{ $svcPort }}
-                    path: /register
-                  - backend:
-                        serviceName: {{ $fullName }}-authserver
-                        servicePort: {{ $svcPort }}
-                    path: /auth
-                  - backend:
-                        serviceName: {{ $fullName }}-authserver
-                        servicePort: {{ $svcPort }}
-                    path: /signin
+                serviceName: {{ $fullName }}-authserver
+                servicePort: {{ $svcPort }}
+            path: /logout
+          - backend:
+                serviceName: {{ $fullName }}-authserver
+                servicePort: {{ $svcPort }}
+            path: /register
+          - backend:
+                serviceName: {{ $fullName }}-authserver
+                servicePort: {{ $svcPort }}
+            path: /auth
+          - backend:
+                serviceName: {{ $fullName }}-authserver
+                servicePort: {{ $svcPort }}
+            path: /signin
         {{- end }}

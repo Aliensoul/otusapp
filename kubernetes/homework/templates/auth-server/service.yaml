@@ -14,4 +14,4 @@ spec:
       name: {{ .Values.authserver.service.portName}}
   selector:
     app: {{ include "homework.fullname" . }}-authserver
-  {{- include "homework.selectorLabels" . | nindent 4 }}-authserver
+  {{- include "homework.selectorLabels" . | nindent 4 }}
