@@ -3,13 +3,15 @@ kind: Service
 metadata:
   name: {{ include "homework.fullname" . }}-authserver
   labels:
-          {{- include "homework.labels" . | nindent 4 }}-authserver
+    app: {{ include "homework.fullname" . }}-authserver
+  {{- include "homework.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.authserver.service.type }}
   ports:
     - port: {{ .Values.authserver.service.port }}
-      targetPort: {{.Values.authserver.service.portName}}
+      targetPort: {{ .Values.authserver.service.portName }}
       protocol: TCP
-      name: {{.Values.authserver.service.portName}}
+      name: {{ .Values.authserver.service.portName}}
   selector:
-          {{- include "homework.selectorLabels" . | nindent 4 }}-authserver
+    app: {{ include "homework.fullname" . }}-authserver
+  {{- include "homework.selectorLabels" . | nindent 4 }}-authserver

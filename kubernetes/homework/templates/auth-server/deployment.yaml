@@ -3,17 +3,20 @@ kind: Deployment
 metadata:
   name: {{ include "homework.fullname" . }}-authserver
   labels:
+    app: {{ include "homework.fullname" . }}-authserver
     {{- include "homework.labels" . | nindent 4 }}-authserver
 spec:
   replicas: {{ .Values.authserver.replicaCount }}
   selector:
     matchLabels:
+      app: {{ include "homework.fullname" . }}-authserver
       {{- include "homework.selectorLabels" . | nindent 6 }}-authserver
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
       labels:
+        app: {{ include "homework.fullname" . }}-authserver
         {{- include "homework.selectorLabels" . | nindent 8 }}-authserver
     spec:
       containers:

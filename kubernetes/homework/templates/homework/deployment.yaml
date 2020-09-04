@@ -3,18 +3,21 @@ kind: Deployment
 metadata:
   name: {{ include "homework.fullname" . }}
   labels:
-        {{- include "homework.labels" . | nindent 4 }}
+    app: {{ include "homework.fullname" . }}
+  {{- include "homework.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.homework.replicaCount }}
   selector:
     matchLabels:
-        {{- include "homework.selectorLabels" . | nindent 6 }}
+      app: {{ include "homework.fullname" . }}
+  {{- include "homework.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
       labels:
-          {{- include "homework.selectorLabels" . | nindent 8 }}
+        app: {{ include "homework.fullname" . }}
+    {{- include "homework.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Values.homework.name }}
