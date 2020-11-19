@@ -1,0 +1,19 @@
+usePassword: true
+password: "1234"
+master:
+  service:
+    type: NodePort
+  persistence:
+    size: 1Gi
+
+slave:
+  service:
+    type: NodePort
+  persistence:
+    size: 1Gi
+
+sentinel:
+  service:
+    type: NodePort
+  persistence:
+    size: 1Gi

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "homework.fullname" . }}-billing
+  labels:
+    app: {{ include "homework.fullname" . }}-billing
+    {{- include "homework.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.billing.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "homework.fullname" . }}-billing
+      {{- include "homework.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+      labels:
+        app: {{ include "homework.fullname" . }}-billing
+        {{- include "homework.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Values.billing.name }}
+          image: "{{ .Values.billing.image.repository }}:{{.Chart.AppVersion }}"
+          ports:
+            - name: {{.Values.billing.service.portName}}
+              containerPort: {{.Values.billing.service.port}}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: {{.Values.billing.service.portName}}
+          readinessProbe:
+            httpGet:
+              path: /health/readiness
+              port: {{.Values.billing.service.portName}}
+          env:
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: billing-secret
+                  key: DATABASE_PASSWORD
+            - name: DATABASE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_HOST
+                  name: billing-config
+            - name: DATABASE_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_DATABASE
+                  name: billing-config
+            - name: DATABASE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_USERNAME
+                  name: billing-config
+            - name: KAFKA_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: KAFKA_SERVERS

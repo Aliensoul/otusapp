@@ -2,11 +2,29 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 8.10.14
+- name: redis
+  repository: https://charts.bitnami.com/bitnami
+  version: 12.1.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 8.10.14
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 8.10.14
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 8.10.14
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 8.10.14
 - name: prometheus-operator
   repository: https://kubernetes-charts.storage.googleapis.com
   version: 9.3.1
+- name: cp-helm-charts
+  repository: https://confluentinc.github.io/cp-helm-charts/
+  version: 0.5.0
 - name: nginx-ingress
   repository: https://kubernetes-charts.storage.googleapis.com
-  version: 1.41.3
-digest: sha256:22974394ebfafb10185e72edbfbe4d8a7acb9cce39b22cbe16f2d97e4abf15ca
-generated: "2020-08-24T01:07:45.6744622+03:00"
+  version: 1.41.2
+digest: sha256:cd6028c98ba7156a2611ac3044d804a276778d6860e6fedcbb924f0ef2b2cb7d
+generated: "2020-11-19T01:47:20.77325+03:00"

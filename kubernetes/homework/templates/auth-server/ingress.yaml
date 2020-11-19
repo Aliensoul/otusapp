@@ -33,4 +33,8 @@ spec:
                 serviceName: {{ $fullName }}-authserver
                 servicePort: {{ $svcPort }}
             path: /signin
+          - backend:
+                serviceName: {{ $fullName }}-authserver
+                servicePort: {{ $svcPort }}
+            path: /swagger-ui.html
         {{- end }}

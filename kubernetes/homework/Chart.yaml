@@ -15,27 +15,70 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.0.1
+version: 1.0.2
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
-appVersion: 1.0.1
+appVersion: 1.0.2
 dependencies:
   - name: postgresql
+    alias: authdb
     version: 8.x.x
     repository: https://charts.bitnami.com/bitnami
-    condition: postgresql.enabled
+    condition: authdb.enabled
     tags:
-      - homework-database
+      - homework-auth-database
+  - name: redis
+    alias: authredis
+    version: 12.1.0
+    repository: https://charts.bitnami.com/bitnami
+    condition: authredis.enabled
+    tags:
+      - homework-auth-redis
+  - name: postgresql
+    alias: billingdb
+    version: 8.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: billingdb.enabled
+    tags:
+      - homework-billing-database
+  - name: postgresql
+    alias: notificationsdb
+    version: 8.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: notificationsdb.enabled
+    tags:
+      - homework-notifications-database
+  - name: postgresql
+    alias: ordersdb
+    version: 8.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: ordersdb.enabled
+    tags:
+      - homework-orders-database
+  - name: postgresql
+    alias: warehousedb
+    version: 8.x.x
+    repository: https://charts.bitnami.com/bitnami
+    condition: warehousedb.enabled
+    tags:
+      - homework-warehouse-database
   - name: prometheus-operator
     version: 9.3.1
     repository: https://kubernetes-charts.storage.googleapis.com
     condition: prometheus-operator.enabled
     tags:
       - homework-prometheus
+  - name: cp-helm-charts
+    alias: kafka
+    version: 0.x.x
+    repository: https://confluentinc.github.io/cp-helm-charts/
+    condition: kafka.enabled
+    tags:
+      - homework-kafka
   - name: nginx-ingress
-    version: 1.41.3
+    version: 1.41.2
     repository: https://kubernetes-charts.storage.googleapis.com
     condition: nginx.enabled
     tags:

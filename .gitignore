@@ -1,6 +1,6 @@
 HELP.md
 target/
-/config/
+/auth-server/config/
 .mvn
 !**/src/main/**/target/
 !**/src/test/**/target/

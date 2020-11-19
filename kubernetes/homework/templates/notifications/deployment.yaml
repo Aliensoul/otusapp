@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "homework.fullname" . }}-notifications
+  labels:
+    app: {{ include "homework.fullname" . }}-notifications
+    {{- include "homework.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.notifications.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "homework.fullname" . }}-notifications
+      {{- include "homework.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+      labels:
+        app: {{ include "homework.fullname" . }}-notifications
+        {{- include "homework.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Values.notifications.name }}
+          image: "{{ .Values.notifications.image.repository }}:{{.Chart.AppVersion }}"
+          ports:
+            - name: {{.Values.notifications.service.portName}}
+              containerPort: {{.Values.notifications.service.port}}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: {{.Values.notifications.service.portName}}
+          readinessProbe:
+            httpGet:
+              path: /health/readiness
+              port: {{.Values.notifications.service.portName}}
+          env:
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: notifications-secret
+                  key: DATABASE_PASSWORD
+            - name: DATABASE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_HOST
+                  name: notifications-config
+            - name: DATABASE_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_DATABASE
+                  name: notifications-config
+            - name: DATABASE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_USERNAME
+                  name: notifications-config
+            - name: KAFKA_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: KAFKA_SERVERS

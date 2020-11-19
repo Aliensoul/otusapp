@@ -18,36 +18,99 @@ authserver:
     hosts:
       - host: arch.homework
 
-
-homework:
-  name: homework
+billing:
+  name: billing
   replicaCount: 2
 
   image:
-    repository: aliensoul/homework
+    repository: aliensoul/billing
   service:
     type: NodePort
-    port: 8000
-    name: homework-http
+    port: 8080
+    portName: billing-http
 
   ingress:
     enabled: true
     annotations: {nginx.ingress.kubernetes.io/rewrite-target: /$2,
-                  nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id",
+                  nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id,X-Role",
                   nginx.ingress.kubernetes.io/auth-signin: "http://$host/signin",
                   nginx.ingress.kubernetes.io/auth-url: "http://homework-authserver.homework.svc.cluster.local:8080/auth"}
     hosts:
       - host: arch.homework
         paths:
-          path: /otusapp/k.verzunov($|/)(.*)
+          path: /otusapp/k.verzunov/billing($|/)(.*)
 
+notifications:
+  name: notifications
+  replicaCount: 2
 
+  image:
+    repository: aliensoul/notifications
+  service:
+    type: NodePort
+    port: 8080
+    portName: notif-http
 
-postgresql:
+  ingress:
+    enabled: true
+    annotations: {nginx.ingress.kubernetes.io/rewrite-target: /$2,
+                  nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id,X-Role",
+                  nginx.ingress.kubernetes.io/auth-signin: "http://$host/signin",
+                  nginx.ingress.kubernetes.io/auth-url: "http://homework-authserver.homework.svc.cluster.local:8080/auth"}
+    hosts:
+      - host: arch.homework
+        paths:
+          path: /otusapp/k.verzunov/notifications($|/)(.*)
+
+orders:
+  name: orders
+  replicaCount: 2
+
+  image:
+    repository: aliensoul/orders
+  service:
+    type: NodePort
+    port: 8080
+    portName: orders-http
+
+  ingress:
+    enabled: true
+    annotations: {nginx.ingress.kubernetes.io/rewrite-target: /$2,
+                  nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id,X-Role",
+                  nginx.ingress.kubernetes.io/auth-signin: "http://$host/signin",
+                  nginx.ingress.kubernetes.io/auth-url: "http://homework-authserver.homework.svc.cluster.local:8080/auth"}
+    hosts:
+      - host: arch.homework
+        paths:
+          path: /otusapp/k.verzunov/orders($|/)(.*)
+
+warehouse:
+  name: warehouse
+  replicaCount: 2
+
+  image:
+    repository: aliensoul/warehouse
+  service:
+    type: NodePort
+    port: 8080
+    portName: warehouse-http
+
+  ingress:
+    enabled: true
+    annotations: {nginx.ingress.kubernetes.io/rewrite-target: /$2,
+                  nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id,X-Role",
+                  nginx.ingress.kubernetes.io/auth-signin: "http://$host/signin",
+                  nginx.ingress.kubernetes.io/auth-url: "http://homework-authserver.homework.svc.cluster.local:8080/auth"}
+    hosts:
+      - host: arch.homework
+        paths:
+          path: /otusapp/k.verzunov/warehouse($|/)(.*)
+
+authdb:
   enabled: true
   postgresqlUsername: myuser
   postgresqlPassword: passwd
-  postgresqlDatabase: homework
+  postgresqlDatabase: authserver
 
   service:
     type: NodePort
@@ -61,17 +124,173 @@ postgresql:
     serviceMonitor:
       enabled: true
 
+billingdb:
+  enabled: true
+  postgresqlUsername: myuser
+  postgresqlPassword: passwd
+  postgresqlDatabase: billing
+
+  service:
+    type: NodePort
+    port: 5432
+
+  persistence:
+    size: 1Gi
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+notificationsdb:
+  enabled: true
+  postgresqlUsername: myuser
+  postgresqlPassword: passwd
+  postgresqlDatabase: notifications
+
+  service:
+    type: NodePort
+    port: 5432
+
+  persistence:
+    size: 1Gi
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+ordersdb:
+  enabled: true
+  postgresqlUsername: myuser
+  postgresqlPassword: passwd
+  postgresqlDatabase: orders
+
+  service:
+    type: NodePort
+    port: 5432
+
+  persistence:
+    size: 1Gi
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+warehousedb:
+  enabled: true
+  postgresqlUsername: myuser
+  postgresqlPassword: passwd
+  postgresqlDatabase: warehouse
+
+  service:
+    type: NodePort
+    port: 5432
+
+  persistence:
+    size: 1Gi
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
 
 prometheus-operator:
-  enabled: false
+  enabled: true
 
   serviceMonitor:
-    enabled: false
+    enabled: true
 
   prometheus:
     prometheusSpec:
       serviceMonitorSelectorNilUsesHelmValues: false
       serviceMonitorSelector: {}
+
+authredis:
+  enabled: true
+  usePassword: true
+  password: "1234"
+  master:
+    service:
+      type: NodePort
+    persistence:
+      size: 1Gi
+
+  slave:
+    service:
+      type: NodePort
+    persistence:
+      size: 1Gi
+
+  sentinel:
+    service:
+      type: NodePort
+    persistence:
+      size: 1Gi
+
+kafka:
+  enabled: true
+  cp-zookeeper:
+    enabled: true
+    servers: 3
+    image: confluentinc/cp-zookeeper
+    imageTag: 5.5.0
+    imagePullSecrets:
+    heapOptions: "-Xms512M -Xmx512M"
+    persistence:
+      enabled: true
+      dataDirSize: 1Gi
+      dataLogDirSize: 1Gi
+    resources: {}
+
+  cp-kafka:
+    enabled: true
+    brokers: 3
+    image: confluentinc/cp-enterprise-kafka
+    imageTag: 5.2.1
+    heapOptions: "-Xms512M -Xmx512M"
+    persistence:
+      enabled: true
+      # storageClass: ""
+      size: 1Gi
+      disksPerBroker: 1
+    nodeport:
+      enabled: true
+      servicePort: 19092
+      firstListenerPort: 31090
+    configurationOverrides:
+      "offsets.topic.replication.factor": "3"
+      # "default.replication.factor": 3
+      # "min.insync.replicas": 2
+      # "auto.create.topics.enable": false
+
+      ## Options required for external access via NodePort
+      ## ref:
+      ## - http://kafka.apache.org/documentation/#security_configbroker
+      ## - https://cwiki.apache.org/confluence/display/KAFKA/KIP-103%3A+Separation+of+Internal+and+External+traffic
+      ##
+      ## Advertised listeners will use the firstListenerPort value as it's default unless overridden here.
+      ## Setting "advertised.listeners" here appends to "PLAINTEXT://${POD_IP}:9092,"
+      "advertised.listeners": |-
+        EXTERNAL://localhost:$((31090 + ${KAFKA_BROKER_ID}))
+      "listener.security.protocol.map": |-
+        PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+
+  cp-schema-registry:
+    enabled: false
+
+  cp-kafka-rest:
+    enabled: false
+
+  cp-kafka-connect:
+    enabled: false
+
+  cp-ksql-server:
+    enabled: false
+
+  cp-control-center:
+    enabled: false
 
 nginx:
   enabled: false
@@ -91,6 +310,6 @@ nginx:
       type: NodePort
 
     metrics:
-      enabled: true
+      enabled: false
       serviceMonitor:
-        enabled: true
+        enabled: false

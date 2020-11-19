@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orders-config
+data:
+  DATABASE_HOST: {{ include "ordersdb.fullname" . }}
+  DATABASE_DATABASE: {{.Values.ordersdb.postgresqlDatabase}}
+  DATABASE_USERNAME: {{.Values.ordersdb.postgresqlUsername}}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: orders-secret
+type: Opaque
+data:
+  DATABASE_PASSWORD: {{ .Values.ordersdb.postgresqlPassword | b64enc }}

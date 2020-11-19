@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authserver-config
+data:
+  DATABASE_HOST: {{ include "authdb.fullname" . }}
+  DATABASE_DATABASE: {{.Values.authdb.postgresqlDatabase}}
+  DATABASE_USERNAME: {{.Values.authdb.postgresqlUsername}}
+  REDIS_HOST: {{ include "authredis.fullname" . }}-master
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authserver-secret
+type: Opaque
+data:
+  DATABASE_PASSWORD: {{ .Values.authdb.postgresqlPassword | b64enc }}
+  REDIS_PASSWORD: {{ .Values.authredis.password | b64enc }}

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "homework.fullname" . }}-orders
+  labels:
+    app: {{ include "homework.fullname" . }}-orders
+    {{- include "homework.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.orders.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "homework.fullname" . }}-orders
+      {{- include "homework.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+      labels:
+        app: {{ include "homework.fullname" . }}-orders
+        {{- include "homework.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Values.orders.name }}
+          image: "{{ .Values.orders.image.repository }}:{{.Chart.AppVersion }}"
+          ports:
+            - name: {{.Values.orders.service.portName}}
+              containerPort: {{.Values.orders.service.port}}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: {{.Values.orders.service.portName}}
+          readinessProbe:
+            httpGet:
+              path: /health/readiness
+              port: {{.Values.orders.service.portName}}
+          env:
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: orders-secret
+                  key: DATABASE_PASSWORD
+            - name: DATABASE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_HOST
+                  name: orders-config
+            - name: DATABASE_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_DATABASE
+                  name: orders-config
+            - name: DATABASE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE_USERNAME
+                  name: orders-config
+            - name: KAFKA_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: KAFKA_SERVERS

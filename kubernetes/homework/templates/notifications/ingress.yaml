@@ -1,0 +1,28 @@
+{{- if .Values.notifications.ingress.enabled -}}
+  {{- $fullName := include "homework.fullname" . -}}
+  {{- $svcPort := .Values.notifications.service.port -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-notifications
+  labels:
+    app: {{ include "homework.fullname" . }}-notifications
+      {{- include "homework.labels" . | nindent 4 }}
+  {{- with .Values.notifications.ingress.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    {{- range .Values.notifications.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}-notifications
+              servicePort: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+  {{- end }}

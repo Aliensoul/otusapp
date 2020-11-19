@@ -1,0 +1,28 @@
+{{- if .Values.billing.ingress.enabled -}}
+  {{- $fullName := include "homework.fullname" . -}}
+  {{- $svcPort := .Values.billing.service.port -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-billing
+  labels:
+    app: {{ include "homework.fullname" . }}-billing
+      {{- include "homework.labels" . | nindent 4 }}
+  {{- with .Values.billing.ingress.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    {{- range .Values.billing.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}-billing
+              servicePort: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+  {{- end }}

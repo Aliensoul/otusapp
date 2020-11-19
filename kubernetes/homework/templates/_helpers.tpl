@@ -65,8 +65,43 @@ Create the name of the service account to use
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "postgresql.fullname" -}}
-{{- printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" -}}
+{{- define "authdb.fullname" -}}
+{{- printf "%s-%s" .Release.Name "authdb" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "authredis.fullname" -}}
+{{- printf "%s-%s" .Release.Name "authredis" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "billingdb.fullname" -}}
+{{- printf "%s-%s" .Release.Name "billingdb" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "notificationsdb.fullname" -}}
+{{- printf "%s-%s" .Release.Name "notificationsdb" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "ordersdb.fullname" -}}
+{{- printf "%s-%s" .Release.Name "ordersdb" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "warehousedb.fullname" -}}
+{{- printf "%s-%s" .Release.Name "warehousedb" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 Create a default fully qualified app name.

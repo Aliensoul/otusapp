@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notifications-config
+data:
+  DATABASE_HOST: {{ include "notificationsdb.fullname" . }}
+  DATABASE_DATABASE: {{.Values.notificationsdb.postgresqlDatabase}}
+  DATABASE_USERNAME: {{.Values.notificationsdb.postgresqlUsername}}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: notifications-secret
+type: Opaque
+data:
+  DATABASE_PASSWORD: {{ .Values.notificationsdb.postgresqlPassword | b64enc }}

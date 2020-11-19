@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "homework.fullname" . }}-warehouse
+  labels:
+    app: {{ include "homework.fullname" . }}-warehouse
+  {{- include "homework.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.warehouse.service.type }}
+  ports:
+    - port: {{ .Values.warehouse.service.port }}
+      targetPort: {{ .Values.warehouse.service.portName }}
+      protocol: TCP
+      name: {{ .Values.warehouse.service.portName}}
+  selector:
+    app: {{ include "homework.fullname" . }}-warehouse
+  {{- include "homework.selectorLabels" . | nindent 4 }}

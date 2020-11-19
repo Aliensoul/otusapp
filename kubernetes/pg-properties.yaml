@@ -1,0 +1,11 @@
+postgresqlUsername: myuser
+postgresqlPassword: passwd
+postgresqlDatabase: authserver
+
+service:
+  type: NodePort
+
+##
+persistence:
+  enabled: true
+  size: 500Mi

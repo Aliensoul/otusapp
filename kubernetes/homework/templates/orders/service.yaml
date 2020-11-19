@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "homework.fullname" . }}-orders
+  labels:
+    app: {{ include "homework.fullname" . }}-orders
+  {{- include "homework.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.orders.service.type }}
+  ports:
+    - port: {{ .Values.orders.service.port }}
+      targetPort: {{ .Values.orders.service.portName }}
+      protocol: TCP
+      name: {{ .Values.orders.service.portName}}
+  selector:
+    app: {{ include "homework.fullname" . }}-orders
+  {{- include "homework.selectorLabels" . | nindent 4 }}

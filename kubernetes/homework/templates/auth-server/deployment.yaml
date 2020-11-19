@@ -34,24 +34,40 @@ spec:
             httpGet:
               path: /health/readiness
               port: {{.Values.authserver.service.portName}}
+
           env:
             - name: DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: homework-secret
+                  name: authserver-secret
                   key: DATABASE_PASSWORD
             - name: DATABASE_HOST
               valueFrom:
                 configMapKeyRef:
                   key: DATABASE_HOST
-                  name: homework-config
+                  name: authserver-config
             - name: DATABASE_DATABASE
               valueFrom:
                 configMapKeyRef:
                   key: DATABASE_DATABASE
-                  name: homework-config
+                  name: authserver-config
             - name: DATABASE_USERNAME
               valueFrom:
                 configMapKeyRef:
                   key: DATABASE_USERNAME
-                  name: homework-config
+                  name: authserver-config
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: REDIS_HOST
+                  name: authserver-config
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: authserver-secret
+                  key: REDIS_PASSWORD
+            - name: KAFKA_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: KAFKA_SERVERS

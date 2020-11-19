@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: warehouse-config
+data:
+  DATABASE_HOST: {{ include "warehousedb.fullname" . }}
+  DATABASE_DATABASE: {{.Values.warehousedb.postgresqlDatabase}}
+  DATABASE_USERNAME: {{.Values.warehousedb.postgresqlUsername}}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: warehouse-secret
+type: Opaque
+data:
+  DATABASE_PASSWORD: {{ .Values.warehousedb.postgresqlPassword | b64enc }}

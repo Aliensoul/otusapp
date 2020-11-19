@@ -1,0 +1,20 @@
+{{- if index .Values "prometheus-operator" "serviceMonitor" "enabled" }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "homework.fullname" . }}-notifications
+  labels:
+  {{- include "homework.labels" . | nindent 4 }}-notifications
+spec:
+  jobLabel: {{ include "homework.fullname" . }}-notifications
+  namespaceSelector:
+    matchNames:
+      - "{{ $.Release.Namespace }}"
+  selector:
+    matchLabels:
+  {{- include "homework.selectorLabels" . | nindent 6 }}-notifications
+  endpoints:
+    - interval: 15s
+      port: http
+      path: /metrics
+  {{- end }}

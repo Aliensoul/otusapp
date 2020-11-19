@@ -1,0 +1,28 @@
+{{- if .Values.orders.ingress.enabled -}}
+  {{- $fullName := include "homework.fullname" . -}}
+  {{- $svcPort := .Values.orders.service.port -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-orders
+  labels:
+    app: {{ include "homework.fullname" . }}-orders
+      {{- include "homework.labels" . | nindent 4 }}
+  {{- with .Values.orders.ingress.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    {{- range .Values.orders.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}-orders
+              servicePort: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+  {{- end }}
