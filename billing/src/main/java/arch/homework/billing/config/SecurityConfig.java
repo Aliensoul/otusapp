@@ -1,6 +1,7 @@
 package arch.homework.billing.config;
 
 import lombok.AllArgsConstructor;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -27,7 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
+                .requestMatchers(EndpointRequest.to("health", "info", "prometheus")).permitAll()
                 .antMatchers("/actuator/**").permitAll()
+                .antMatchers("/metrics").permitAll()
                 .antMatchers(BASE_PATH + "/**").hasRole("User")
                 .antMatchers("/admin/**").hasRole("Admin")
                 .and()

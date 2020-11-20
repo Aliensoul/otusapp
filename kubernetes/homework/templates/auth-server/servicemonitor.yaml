@@ -2,9 +2,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "homework.fullname" . }}-authserver
+  name: {{ template "homework.fullname" . }}-authserver
   labels:
-  {{- include "homework.labels" . | nindent 4 }}-authserver
+    app: {{ template "homework.fullname" . }}-authserver
+        {{- include "homework.labels" . | nindent 4 }}
 spec:
   jobLabel: {{ include "homework.fullname" . }}-authserver
   namespaceSelector:
@@ -12,9 +13,10 @@ spec:
       - "{{ $.Release.Namespace }}"
   selector:
     matchLabels:
-  {{- include "homework.selectorLabels" . | nindent 6 }}-authserver
+      app: {{ template "homework.fullname" . }}-authserver
+      {{- include "homework.selectorLabels" . | nindent 6 }}
   endpoints:
     - interval: 15s
-      port: http
+      port: authserver-http
       path: /metrics
   {{- end }}

@@ -1,8 +1,6 @@
 package arch.homework.orders.repository.impl;
 
-import arch.homework.orders.entity.CreateOrderRequest;
-import arch.homework.orders.entity.Order;
-import arch.homework.orders.entity.SagaStatus;
+import arch.homework.orders.entity.*;
 import arch.homework.orders.repository.OrdersRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
@@ -15,12 +13,16 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Types;
+import java.util.List;
 
 @AllArgsConstructor
 @Repository
 public class OrdersRepositoryImpl implements OrdersRepository {
 
     private final static String GET_ORDER_BY_ID_QUERY = "select * from orders where id = :id";
+    private final static String GET_ORDERS = "select * from orders where user_id = :user_id";
+    private final static String GET_ORDER_ITEMS = "select * from order_items where order_id = :order_id";
+    private final static String GET_ORDER_DETAILS = "select * from order_details where order_id = :order_id";
     private final static String GET_ORDER_BY_ID_WITH_LOCK_QUERY = "select * from orders where id = :id for update";
     private final static String UPDATE_BILLING_STATUS = "update orders set billing_status = :status where id = :id";
     private final static String UPDATE_WAREHOUSE_STATUS = "update orders set warehouse_status = :status where id = :id";
@@ -29,6 +31,8 @@ public class OrdersRepositoryImpl implements OrdersRepository {
     private final static String UPDATE_ORDER_STATUS = "update orders set order_status = :status where id = :id";
 
     private final static BeanPropertyRowMapper<Order> BPRM_ORDER = BeanPropertyRowMapper.newInstance(Order.class);
+    private final static BeanPropertyRowMapper<OrderInfo.ItemsInfo> BPRM_ORDER_ITEM = BeanPropertyRowMapper.newInstance(OrderInfo.ItemsInfo.class);
+    private final static BeanPropertyRowMapper<OrderDetails> BPRM_ORDER_DETAILS = BeanPropertyRowMapper.newInstance(OrderDetails.class);
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -93,8 +97,8 @@ public class OrdersRepositoryImpl implements OrdersRepository {
     @Override
     public void updateBillingStatus(Long id, SagaStatus status) {
         namedParameterJdbcTemplate.update(UPDATE_BILLING_STATUS, new MapSqlParameterSource()
-        .addValue("status", status.toString(), Types.VARCHAR)
-        .addValue("id", id, Types.NUMERIC));
+                .addValue("status", status.toString(), Types.VARCHAR)
+                .addValue("id", id, Types.NUMERIC));
     }
 
     @Override
@@ -117,5 +121,26 @@ public class OrdersRepositoryImpl implements OrdersRepository {
         namedParameterJdbcTemplate.update(UPDATE_WAREHOUSE_STATUS, new MapSqlParameterSource()
                 .addValue("status", status.toString(), Types.VARCHAR)
                 .addValue("id", id, Types.NUMERIC));
+    }
+
+    @Override
+    public List<Order> getOrdersByUserId(Long userId) {
+        return namedParameterJdbcTemplate.query(GET_ORDERS,
+                new MapSqlParameterSource("user_id", userId),
+                BPRM_ORDER);
+    }
+
+    @Override
+    public List<OrderInfo.ItemsInfo> getOrderItems(Long id) {
+        return namedParameterJdbcTemplate.query(GET_ORDER_ITEMS,
+                new MapSqlParameterSource("order_id", id),
+                BPRM_ORDER_ITEM);
+    }
+
+    @Override
+    public OrderDetails getOrderDetails(Long id) {
+        return DataAccessUtils.singleResult(namedParameterJdbcTemplate.query(GET_ORDER_DETAILS,
+                new MapSqlParameterSource("order_id", id),
+                BPRM_ORDER_DETAILS));
     }
 }

@@ -2,6 +2,7 @@ package arch.homework.orders.config;
 
 import arch.homework.orders.controller.OrdersController;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,6 +26,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
+                .requestMatchers(EndpointRequest.to("health", "info", "prometheus")).permitAll()
+                .antMatchers("/metrics").permitAll()
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers(OrdersController.ORDERS + "/**").hasRole("User")
                 .and()

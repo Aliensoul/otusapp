@@ -16,4 +16,8 @@ public interface OrdersService {
     Result confirmOrder(OrderRequest request, Long userId);
 
     Result cancelOrder(OrderRequest request, Long valueOf);
+
+    GetOrdersResponse getOrders(Long userId);
+
+    OrderStatusResponse getOrderStatus(Long orderId, Long valueOf);
 }

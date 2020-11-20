@@ -5,7 +5,7 @@ import arch.homework.warehouse.entity.*;
 
 public interface WarehouseService {
 
-    Result addNewItem(Item item);
+    Result addNewItem(AddItem item);
 
     Result restockItems(RestockItemsRequest restockItemsRequest);
 
@@ -16,4 +16,10 @@ public interface WarehouseService {
     OrderStatusChangedEvent cancel(OrderStatusChangedEvent value);
 
     OrderStatusChangedEvent confirm(OrderStatusChangedEvent event);
+
+    ItemResult getItemById(Long id);
+
+    ItemsResult getItemsByCategory(String category);
+
+    ItemResult getItemByName(String name);
 }

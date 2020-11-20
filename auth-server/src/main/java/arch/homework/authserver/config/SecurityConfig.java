@@ -64,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .requestMatchers(EndpointRequest.to("health", "info", "prometheus")).permitAll()
+                .antMatchers("/metrics").permitAll()
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/register", "/login").anonymous()
                 .antMatchers("/logout").authenticated()

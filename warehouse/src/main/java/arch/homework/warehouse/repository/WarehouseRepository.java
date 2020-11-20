@@ -1,15 +1,12 @@
 package arch.homework.warehouse.repository;
 
-import arch.homework.warehouse.entity.Item;
-import arch.homework.warehouse.entity.OrderWarehouseStatus;
-import arch.homework.warehouse.entity.OrderedItem;
-import arch.homework.warehouse.entity.RestockItemsRequest;
+import arch.homework.warehouse.entity.*;
 
 import java.util.List;
 
 public interface WarehouseRepository {
 
-    void addNewItem(Item item);
+    void addNewItem(AddItem item);
 
     void restockItems(RestockItemsRequest restockItemsRequest);
 
@@ -24,4 +21,10 @@ public interface WarehouseRepository {
     List<OrderedItem> getOrderedItems(Long orderId);
 
     void changeReservationStatus(Long orderId, String status);
+
+    Item getItemById(Long itemId);
+
+    List<Item> getItemsByCategory(String itemCategory);
+
+    Item getItemsByName(String itemName);
 }

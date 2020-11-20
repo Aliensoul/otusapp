@@ -2,9 +2,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "homework.fullname" . }}-warehouse
+  name: {{ template "homework.fullname" . }}-warehouse
   labels:
-  {{- include "homework.labels" . | nindent 4 }}-warehouse
+    app: {{ template "homework.fullname" . }}-warehouse
+  {{- include "homework.labels" . | nindent 4 }}
 spec:
   jobLabel: {{ include "homework.fullname" . }}-warehouse
   namespaceSelector:
@@ -12,9 +13,10 @@ spec:
       - "{{ $.Release.Namespace }}"
   selector:
     matchLabels:
-  {{- include "homework.selectorLabels" . | nindent 6 }}-warehouse
+      app: {{ template "homework.fullname" . }}-warehouse
+  {{- include "homework.selectorLabels" . | nindent 6 }}
   endpoints:
     - interval: 15s
-      port: http
+      port: warehouse-http
       path: /metrics
   {{- end }}

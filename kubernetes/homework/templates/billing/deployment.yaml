@@ -30,10 +30,12 @@ spec:
             httpGet:
               path: /health/liveness
               port: {{.Values.billing.service.portName}}
+            initialDelaySeconds: 20
           readinessProbe:
             httpGet:
               path: /health/readiness
               port: {{.Values.billing.service.portName}}
+            initialDelaySeconds: 20
           env:
             - name: DATABASE_PASSWORD
               valueFrom:

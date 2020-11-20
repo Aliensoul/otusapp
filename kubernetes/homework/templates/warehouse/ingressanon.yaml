@@ -1,0 +1,24 @@
+{{- if .Values.warehouse.ingressanon.enabled -}}
+  {{- $fullName := include "homework.fullname" . -}}
+  {{- $svcPort := .Values.warehouse.service.port -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-warehouse-anon
+  labels:
+    app: {{ include "homework.fullname" . }}-warehouse
+      {{- include "homework.labels" . | nindent 4 }}
+spec:
+  rules:
+    {{- range .Values.warehouse.ingressanon.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ $fullName }}-warehouse
+              servicePort: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+  {{- end }}

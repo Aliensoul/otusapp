@@ -2,9 +2,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "homework.fullname" . }}-billing
+  name: {{ template "homework.fullname" . }}-billing
   labels:
-  {{- include "homework.labels" . | nindent 4 }}-billing
+    app: {{ template "homework.fullname" . }}-billing
+  {{- include "homework.labels" . | nindent 4 }}
 spec:
   jobLabel: {{ include "homework.fullname" . }}-billing
   namespaceSelector:
@@ -12,9 +13,10 @@ spec:
       - "{{ $.Release.Namespace }}"
   selector:
     matchLabels:
-  {{- include "homework.selectorLabels" . | nindent 6 }}-billing
+      app: {{ template "homework.fullname" . }}-billing
+  {{- include "homework.selectorLabels" . | nindent 6 }}
   endpoints:
     - interval: 15s
-      port: http
+      port: billing-http
       path: /metrics
   {{- end }}

@@ -39,7 +39,7 @@ public class CustomAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return authorities.stream().findFirst().orElseThrow(() -> new RuntimeException("Could not get role"));
+        return authorities == null ? null : authorities.stream().findFirst().orElse(null);
     }
 
     @Override

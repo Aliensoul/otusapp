@@ -6,8 +6,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class Item {
+public class AddItem {
 
+    @JsonIgnore
     private Long id;
 
     private String name;

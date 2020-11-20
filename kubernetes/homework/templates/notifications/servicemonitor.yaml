@@ -2,9 +2,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "homework.fullname" . }}-notifications
+  name: {{ template "homework.fullname" . }}-notifications
   labels:
-  {{- include "homework.labels" . | nindent 4 }}-notifications
+    app: {{ template "homework.fullname" . }}-notifications
+  {{- include "homework.labels" . | nindent 4 }}
 spec:
   jobLabel: {{ include "homework.fullname" . }}-notifications
   namespaceSelector:
@@ -12,9 +13,10 @@ spec:
       - "{{ $.Release.Namespace }}"
   selector:
     matchLabels:
-  {{- include "homework.selectorLabels" . | nindent 6 }}-notifications
+      app: {{ template "homework.fullname" . }}-notifications
+  {{- include "homework.selectorLabels" . | nindent 6 }}
   endpoints:
     - interval: 15s
-      port: http
+      port: notif-http
       path: /metrics
   {{- end }}

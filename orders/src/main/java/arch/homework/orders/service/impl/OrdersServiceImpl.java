@@ -10,6 +10,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @AllArgsConstructor
 @Service
 @Transactional
@@ -145,5 +148,41 @@ public class OrdersServiceImpl implements OrdersService {
                 .setUserId(order.getUserId()));
 
         return new Result(0, "ok");
+    }
+
+    @Override
+    public GetOrdersResponse getOrders(Long userId) {
+        List<Order> ordersByUserId = ordersRepository.getOrdersByUserId(userId);
+
+        List<OrderInfo> orders = new ArrayList<>();
+
+        for (Order order : ordersByUserId) {
+            OrderInfo req = new OrderInfo();
+            req.setStatus(order.getOrderStatus());
+            req.setId(order.getId());
+
+            req.setItems(ordersRepository.getOrderItems(order.getId()));
+
+            OrderDetails orderDetails = ordersRepository.getOrderDetails(order.getId());
+
+            req.setPrice(orderDetails.getPrice());
+            req.setDeliveryInfo(new OrderInfo.DeliveryInfo()
+                    .setAddress(orderDetails.getAddress())
+                    .setDate(orderDetails.getDate()));
+
+            orders.add(req);
+        }
+
+        return new GetOrdersResponse(0, "ok").setOrders(orders);
+    }
+
+    @Override
+    public OrderStatusResponse getOrderStatus(Long orderId, Long userId) {
+        Order order = ordersRepository.getOrderWithLock(orderId);
+        if (!order.getUserId().equals(userId)) {
+            throw new UnauthorizedException();
+        }
+
+        return new OrderStatusResponse(0, "ok").setOrder(order);
     }
 }

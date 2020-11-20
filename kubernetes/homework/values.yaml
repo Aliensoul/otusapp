@@ -20,7 +20,7 @@ authserver:
 
 billing:
   name: billing
-  replicaCount: 2
+  replicaCount: 1
 
   image:
     repository: aliensoul/billing
@@ -31,18 +31,17 @@ billing:
 
   ingress:
     enabled: true
-    annotations: {nginx.ingress.kubernetes.io/rewrite-target: /$2,
-                  nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id,X-Role",
-                  nginx.ingress.kubernetes.io/auth-signin: "http://$host/signin",
+    annotations: {nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id,X-Role",
+                  nginx.ingress.kubernetes.io/auth-signin: "http://homework-authserver.homework.svc.cluster.local:8080/signin",
                   nginx.ingress.kubernetes.io/auth-url: "http://homework-authserver.homework.svc.cluster.local:8080/auth"}
     hosts:
       - host: arch.homework
         paths:
-          path: /otusapp/k.verzunov/billing($|/)(.*)
+          path: /billing($|/)(.*)
 
 notifications:
   name: notifications
-  replicaCount: 2
+  replicaCount: 1
 
   image:
     repository: aliensoul/notifications
@@ -55,7 +54,7 @@ notifications:
     enabled: true
     annotations: {nginx.ingress.kubernetes.io/rewrite-target: /$2,
                   nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id,X-Role",
-                  nginx.ingress.kubernetes.io/auth-signin: "http://$host/signin",
+                  nginx.ingress.kubernetes.io/auth-signin: "http://homework-authserver.homework.svc.cluster.local:8080/signin",
                   nginx.ingress.kubernetes.io/auth-url: "http://homework-authserver.homework.svc.cluster.local:8080/auth"}
     hosts:
       - host: arch.homework
@@ -64,7 +63,7 @@ notifications:
 
 orders:
   name: orders
-  replicaCount: 2
+  replicaCount: 1
 
   image:
     repository: aliensoul/orders
@@ -75,18 +74,17 @@ orders:
 
   ingress:
     enabled: true
-    annotations: {nginx.ingress.kubernetes.io/rewrite-target: /$2,
-                  nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id,X-Role",
-                  nginx.ingress.kubernetes.io/auth-signin: "http://$host/signin",
+    annotations: {nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id,X-Role",
+                  nginx.ingress.kubernetes.io/auth-signin: "http://homework-authserver.homework.svc.cluster.local:8080/signin",
                   nginx.ingress.kubernetes.io/auth-url: "http://homework-authserver.homework.svc.cluster.local:8080/auth"}
     hosts:
       - host: arch.homework
         paths:
-          path: /otusapp/k.verzunov/orders($|/)(.*)
+          path: /orders($|/)(.*)
 
 warehouse:
   name: warehouse
-  replicaCount: 2
+  replicaCount: 1
 
   image:
     repository: aliensoul/warehouse
@@ -97,14 +95,20 @@ warehouse:
 
   ingress:
     enabled: true
-    annotations: {nginx.ingress.kubernetes.io/rewrite-target: /$2,
-                  nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id,X-Role",
-                  nginx.ingress.kubernetes.io/auth-signin: "http://$host/signin",
+    annotations: {nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id,X-Role",
+                  nginx.ingress.kubernetes.io/auth-signin: "http://homework-authserver.homework.svc.cluster.local:8080/signin",
                   nginx.ingress.kubernetes.io/auth-url: "http://homework-authserver.homework.svc.cluster.local:8080/auth"}
     hosts:
       - host: arch.homework
         paths:
-          path: /otusapp/k.verzunov/warehouse($|/)(.*)
+          path: /warehouse/admin($|/)(.*)
+
+  ingressanon:
+    enabled: true
+    hosts:
+      - host: arch.homework
+        paths:
+          path: /warehouse/catalogue($|/)(.*)
 
 authdb:
   enabled: true
@@ -206,6 +210,11 @@ prometheus-operator:
     prometheusSpec:
       serviceMonitorSelectorNilUsesHelmValues: false
       serviceMonitorSelector: {}
+  grafana:
+    service:
+      type: NodePort
+    ingress:
+      enabled: true
 
 authredis:
   enabled: true

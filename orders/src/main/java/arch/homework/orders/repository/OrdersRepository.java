@@ -1,8 +1,8 @@
 package arch.homework.orders.repository;
 
-import arch.homework.orders.entity.CreateOrderRequest;
-import arch.homework.orders.entity.Order;
-import arch.homework.orders.entity.SagaStatus;
+import arch.homework.orders.entity.*;
+
+import java.util.List;
 
 public interface OrdersRepository {
 
@@ -23,4 +23,10 @@ public interface OrdersRepository {
     void updateOrderStatus(Long id, SagaStatus prepared);
 
     void updateWarehouseStatus(Long id, SagaStatus prepared);
+
+    List<Order> getOrdersByUserId(Long userId);
+
+    List<OrderInfo.ItemsInfo> getOrderItems(Long id);
+
+    OrderDetails getOrderDetails(Long id);
 }

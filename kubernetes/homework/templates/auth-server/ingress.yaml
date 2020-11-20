@@ -37,4 +37,20 @@ spec:
                 serviceName: {{ $fullName }}-authserver
                 servicePort: {{ $svcPort }}
             path: /swagger-ui.html
+          - backend:
+                serviceName: {{ $fullName }}-authserver
+                servicePort: {{ $svcPort }}
+            path: /webjars($|/)(.*)
+          - backend:
+                serviceName: {{ $fullName }}-authserver
+                servicePort: {{ $svcPort }}
+            path: /swagger-resources($|/)(.*)
+          - backend:
+                serviceName: {{ $fullName }}-authserver
+                servicePort: {{ $svcPort }}
+            path: /v2/api-docs($|/)(.*)
+          - backend:
+                serviceName: {{ $fullName }}-authserver
+                servicePort: {{ $svcPort }}
+            path: /csrf($|/)(.*)
         {{- end }}

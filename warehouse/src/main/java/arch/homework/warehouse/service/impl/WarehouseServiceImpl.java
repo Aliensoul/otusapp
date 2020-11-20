@@ -17,7 +17,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     private final WarehouseRepository warehouseRepository;
 
     @Override
-    public Result addNewItem(Item item) {
+    public Result addNewItem(AddItem item) {
         try {
             warehouseRepository.addNewItem(item);
         } catch (DuplicateKeyException e) {
@@ -73,5 +73,26 @@ public class WarehouseServiceImpl implements WarehouseService {
         items.forEach(x -> warehouseRepository.changeReservationStatus(x.getOrderId(), OrderWarehouseStatus.SHIPPED.toString()));
 
         return event.setStatus(SagaStatus.COMPLETED.toString());
+    }
+
+    @Override
+    public ItemResult getItemById(Long id) {
+        Item itemById = warehouseRepository.getItemById(id);
+
+        return new ItemResult(0, "ok").setItem(itemById);
+    }
+
+    @Override
+    public ItemsResult getItemsByCategory(String category) {
+        List<Item> itemsByCategory = warehouseRepository.getItemsByCategory(category);
+
+        return new ItemsResult(0, "ok").setItems(itemsByCategory);
+    }
+
+    @Override
+    public ItemResult getItemByName(String name) {
+        Item items = warehouseRepository.getItemsByName(name);
+
+        return new ItemResult(0, "ok").setItem(items);
     }
 }

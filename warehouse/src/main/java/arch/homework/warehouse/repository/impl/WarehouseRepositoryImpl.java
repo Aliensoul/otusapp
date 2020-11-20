@@ -1,9 +1,6 @@
 package arch.homework.warehouse.repository.impl;
 
-import arch.homework.warehouse.entity.Item;
-import arch.homework.warehouse.entity.OrderWarehouseStatus;
-import arch.homework.warehouse.entity.OrderedItem;
-import arch.homework.warehouse.entity.RestockItemsRequest;
+import arch.homework.warehouse.entity.*;
 import arch.homework.warehouse.repository.WarehouseRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.support.DataAccessUtils;
@@ -24,6 +21,9 @@ public class WarehouseRepositoryImpl implements WarehouseRepository {
     private static final String RESTOCK_ITEMS_SQL = "update items set quantity = quantity + :quantity where id = :id";
     private static final String EXIST_RESERVATION = "select count(*) from ordered_items where order_id = :order_id";
     private static final String GET_ITEM_WITH_LOCK = "select * from items where id = :id for update";
+    private static final String GET_ITEM_BY_ID = "select * from items where id = :id";
+    private static final String GET_ITEMS_BY_CATEGORY = "select * from items where category = :category";
+    private static final String GET_ITEM_BY_NAME = "select * from items where name = :name";
     private static final String GET_ORDERED_ITEMS = "select * from ordered_items where order_id = :order_id for update";
     private static final String CHANGE_STATUS_ORDERED_ITEMS = "update ordered_items set status = :status where order_id = :order_id";
 
@@ -34,7 +34,7 @@ public class WarehouseRepositoryImpl implements WarehouseRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public void addNewItem(Item item) {
+    public void addNewItem(AddItem item) {
         SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("items")
                 .usingGeneratedKeyColumns("id");
@@ -98,5 +98,26 @@ public class WarehouseRepositoryImpl implements WarehouseRepository {
         namedParameterJdbcTemplate.update(CHANGE_STATUS_ORDERED_ITEMS,
                 new MapSqlParameterSource("order_id", orderId)
                         .addValue("status", status));
+    }
+
+    @Override
+    public Item getItemById(Long itemId) {
+        return DataAccessUtils.singleResult(namedParameterJdbcTemplate.query(GET_ITEM_BY_ID,
+                new MapSqlParameterSource("id", itemId),
+                BPRM_ITEM));
+    }
+
+    @Override
+    public List<Item> getItemsByCategory(String itemCategory) {
+        return namedParameterJdbcTemplate.query(GET_ITEMS_BY_CATEGORY,
+                new MapSqlParameterSource("category", itemCategory),
+                BPRM_ITEM);
+    }
+
+    @Override
+    public Item getItemsByName(String itemName) {
+        return DataAccessUtils.singleResult(namedParameterJdbcTemplate.query(GET_ITEM_BY_NAME,
+                new MapSqlParameterSource("name", itemName),
+                BPRM_ITEM));
     }
 }

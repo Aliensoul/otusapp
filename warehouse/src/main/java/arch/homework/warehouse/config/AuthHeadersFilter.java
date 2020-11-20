@@ -27,22 +27,11 @@ public class AuthHeadersFilter extends OncePerRequestFilter {
         if (role == null) {
             auth.setAuthenticated(false);
         } else {
-            Matcher matcher = Pattern.compile(".*\\/accounts\\/([a-zA-Z0-9-]+)(\\/?).*").matcher(request.getRequestURI());
+        Long id = Long.valueOf(request.getHeader("X-User-Id"));
 
-            if (matcher.matches()) {
-                String id = Optional.ofNullable(request.getHeader("X-User-Id")).orElseThrow(() -> new BadCredentialsException(""));
-
-                if (!id.equals(matcher.group(1))) {
-                    throw new BadCredentialsException("");
-                }
-            }
-
-            Long id = Long.valueOf(request.getHeader("X-User-Id"));
-
-
-            auth.setAuthenticated(true);
-            auth.setUserId(id);
-            auth.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority(String.format("ROLE_%s", role))));
+        auth.setAuthenticated(true);
+        auth.setUserId(id);
+        auth.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority(String.format("ROLE_%s", role))));
         }
         SecurityContextHolder.getContext().setAuthentication(auth);
         filterChain.doFilter(request, response);
